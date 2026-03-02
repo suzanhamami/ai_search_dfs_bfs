@@ -14,6 +14,7 @@ def is_valid(row, col):
     
 def calculate_move(symbol):
     if (symbol=="M"):
+        global score
         score-=5
     elif (symbol == "."):
         score-=1
@@ -58,7 +59,29 @@ def get_neighbors(state, all_destinations):
             if (grid[new_row][new_col]=="G"):
                 if(len(new_visited) != len(all_destinations)):
                    continue
-            
-            neighbors.append(((new_row, new_col, {new_visited}), move_name))
+
+            new_state = (new_row, new_col, new_visited)
+            neighbors.append((new_state, move_name))
 
     return neighbors
+
+def dfs(start, goal, destinations):
+    start_state = (start[0], start[1], set())
+    stack = [start_state]
+    visited = set([start_state])
+    path = {}
+    steps_taken = {}
+
+    while stack:
+        state = stack.pop()
+        row, col, visited_D = state
+        if (row, col) == goal and len(visited_D) == len(destinations):
+            return prepare_solution(path, steps_taken, state)
+        neighbors = get_neighbors(state, destinations)
+        for n, move in neighbors:
+            if n not in visited:
+                visited.add(n)
+                stack.append(n)
+                path[n] = state
+                steps_taken[n] = move
+    return None
