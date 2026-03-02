@@ -1,3 +1,4 @@
+from collections import deque
 import random
 cells = (["M"]*39 + ["X"]*9 + ["S"] + ["G"] + ["D"]*3 + ["."]*91)
 random.shuffle(cells)
@@ -5,6 +6,11 @@ random.shuffle(cells)
 grid = [cells[i:i+12] for i in range (0,144,12)]
 score = 28
 # print(grid)
+
+def print_grid():
+    for row in grid:
+        print(" ".join(row))
+    print()
 
 def check_boundaries(row, col):
     return row >=0 and row <=11 and col >=0 and col<=11
@@ -60,13 +66,31 @@ def get_neighbors(state, all_destinations):
                 if(len(new_visited) != len(all_destinations)):
                    continue
 
-            new_state = (new_row, new_col, new_visited)
+            new_state = (new_row, new_col, frozenset(new_visited))
             neighbors.append((new_state, move_name))
 
     return neighbors
 
+def prepare_solution(path, steps_taken, state):
+    solution = [(state, None)]
+    while state in path:
+        solution.append((path[state], steps_taken[state]))
+        state = path[state]
+
+    solution.reverse()
+    return solution
+
+def print_solution(solution):
+    for state, move in solution:
+        row, col, visited_D = state
+
+        print("Move:", move if move else "START")
+        print("Position:", (row, col))
+        print("Visited Destinations:", visited_D)
+        print()
+
 def dfs(start, goal, destinations):
-    start_state = (start[0], start[1], set())
+    start_state = (start[0], start[1], frozenset())
     stack = [start_state]
     visited = set([start_state])
     path = {}
@@ -85,3 +109,50 @@ def dfs(start, goal, destinations):
                 path[n] = state
                 steps_taken[n] = move
     return None
+
+def bfs(start, goal, destinations):
+    start_state = (start[0], start[1], frozenset())
+    queue = deque([start_state])
+    visited = set([start_state])
+    path = {}
+    steps_taken = {}
+
+    while queue:
+        state = queue.popleft()
+        row, col, visited_D = state
+        if (row, col) == goal and len(visited_D) == len(destinations):
+            return prepare_solution(path, steps_taken, state)
+        neighbors = get_neighbors(state, destinations)
+        for n, move in neighbors:
+            if n not in visited:
+                visited.add(n)
+                queue.append(n)
+                path[n] = state
+                steps_taken[n] = move
+    return None
+
+print("Generated Grid:\n")
+print_grid()
+
+start, goal, destinations = find_position()
+
+print("Start:", start)
+print("Goal:", goal)
+print("Destinations:", destinations)
+print("\n================ BFS ================\n")
+
+bfs_solution = bfs(start, goal, destinations)
+
+if bfs_solution:
+    print_solution(bfs_solution)
+else:
+    print("No BFS solution found.")
+
+print("\n================ DFS ================\n")
+
+dfs_solution = dfs(start, goal, destinations)
+
+if dfs_solution:
+    print_solution(dfs_solution)
+else:
+    print("No DFS solution found.")
