@@ -18,15 +18,6 @@ def check_boundaries(row, col):
 def is_valid(row, col):
     return check_boundaries(row, col) and grid[row][col] != "X"
     
-def calculate_move(symbol):
-    if (symbol=="M"):
-        global score
-        score-=5
-    elif (symbol == "."):
-        score-=1
-    elif (symbol == "D"):
-        score+=2
-
 def find_position():
     start = None
     goal = None
