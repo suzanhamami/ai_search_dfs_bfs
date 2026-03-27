@@ -101,6 +101,14 @@ The program prints:
 
 ---
 
+## 🌿 Visualization Branch
+
+A separate branch includes a visualization of the grid and agent movement.
+
+To access it:
+
+```bash
+git checkout visualization
 ## ▶️ How to Run
 
 ```bash
