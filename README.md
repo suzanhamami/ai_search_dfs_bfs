@@ -120,5 +120,3 @@ python puzzle.py
 ## 👨‍💻 Authors
 Suzan Hamami
 Louay Arnaba Khordaji
-
-[Your Name]
