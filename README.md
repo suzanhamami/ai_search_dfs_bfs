@@ -118,5 +118,5 @@ python puzzle.py
 ---
 
 ## 👨‍💻 Authors
-Suzan Hamami
-Louay Arnaba Khordaji
+* Suzan Hamami
+* Louay Arnaba Khordaji
